@@ -8,19 +8,10 @@
 
 import UIKit
 
-let twitterConsumerKey = ""
-let twitterConsumerSecret = ""
 let twitterBaseURL = NSURL(string: "https://api.twitter.com")
 
 class TwitterClient: BDBOAuth1RequestOperationManager {
+    static let credentials = Credentials.defaultCredentials
+    static let sharedInstance = TwitterClient(baseURL: twitterBaseURL, consumerKey: credentials.consumerKey, consumerSecret: credentials.consumerSecret)
 
-    
-    
-    class var sharedInstance: TwitterClient {
-        struct Static {
-            static let instance = TwitterClient(baseURL: twitterBaseURL, consumerKey: twitterConsumerKey, consumerSecret: twitterConsumerSecret)
-        }
-        
-        return Static.instance
-    }
 }
