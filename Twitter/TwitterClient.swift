@@ -17,6 +17,16 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
     static let credentials = Credentials.defaultCredentials
     static let sharedInstance = TwitterClient(baseURL: twitterBaseURL, consumerKey: credentials.consumerKey, consumerSecret: credentials.consumerSecret)
 
+    func homeTimelineWithParams(params: NSDictionary?, completion: (tweets: [Tweet]?, error: NSError?) -> ()) {
+        TwitterClient.sharedInstance.GET("1.1/statuses/home_timeline.json", parameters: params, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
+            var tweets = Tweet.tweetsWithArray(response as! [NSDictionary])
+            completion(tweets: tweets, error: nil)
+        }, failure: { (operation: AFHTTPRequestOperation!, error: NSError!) -> Void in
+            print("error getting home timeline")
+            completion(tweets: nil, error: error)
+        })
+    }
+    
     func loginWithCompletion(completion: (user: User?, error: NSError?) -> ()) {
         loginCompletion = completion
         
@@ -31,7 +41,7 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
                 self.loginCompletion?(user: nil, error: error)
         }
     }
-    
+
     func openURL(url: NSURL) {
         fetchAccessTokenWithPath("oauth/access_token", method: "POST", requestToken: BDBOAuth1Credential(queryString: url.query), success: { (accessToken: BDBOAuth1Credential!) -> Void in
             print("got the access token!")
@@ -44,15 +54,6 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
                 }, failure: { (operation: AFHTTPRequestOperation!, error: NSError!) -> Void in
                     print("error getting current user")
                     self.loginCompletion?(user: nil, error: error)
-            })
-            
-            TwitterClient.sharedInstance.GET("1.1/statuses/home_timeline.json", parameters: nil, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
-                var tweets = Tweet.tweetsWithArray(response as! [NSDictionary])
-                for tweet in tweets {
-                    print("text: \(tweet.text), created: \(tweet.createdAt)")
-                }
-                }, failure: { (operation: AFHTTPRequestOperation!, error: NSError!) -> Void in
-                    print("error getting current user")
             })
             
             }) { (error: NSError!) -> Void in
