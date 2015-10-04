@@ -17,12 +17,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDidLogout", name: userDidLogoutNotification, object: nil)
+        
         if User.currentUser != nil {
             var tweetsViewController = storyboard.instantiateViewControllerWithIdentifier("TweetsViewController") as UIViewController
             window?.rootViewController = tweetsViewController
         }
         
         return true
+    }
+    
+    func userDidLogout() {
+        var initialViewController = storyboard.instantiateInitialViewController()
+        window?.rootViewController = initialViewController
     }
 
     func applicationWillResignActive(application: UIApplication) {
