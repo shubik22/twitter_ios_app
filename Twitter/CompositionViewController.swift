@@ -17,6 +17,7 @@ class CompositionViewController: UIViewController {
             twitterHandleLabel.text = "@\(user.screenname!)"
         }
     }
+    var sendingVC: UIViewController?
     
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
@@ -25,7 +26,11 @@ class CompositionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         user = User.currentUser
-        // Do any additional setup after loading the view.
+
+        tweetTextView.layer.borderWidth = 1.0
+        tweetTextView.layer.borderColor = UIColor.grayColor().CGColor
+        tweetTextView.clipsToBounds = true
+        tweetTextView.layer.cornerRadius = 3.0
     }
 
     override func didReceiveMemoryWarning() {
@@ -33,15 +38,16 @@ class CompositionViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    @IBAction func onTweet(sender: AnyObject) {
+        print("tweeted")
     }
-    */
+
+    @IBAction func onCancel(sender: AnyObject) {
+        self.performSegueWithIdentifier("homeSegue", sender: self)
+    }
+
+//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+//        self.sendingVC = segue.sourceViewController
+//    }
 
 }
