@@ -8,10 +8,12 @@
 
 import UIKit
 
-class TweetsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UINavigationBarDelegate {
+class TweetsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UINavigationBarDelegate, TweetCellDelegate {
 
     var tweets: [Tweet]?
     var refreshControl: UIRefreshControl!
+    var inReplyToStatusId: Int?
+    var inReplyToUsername: String?
 
     @IBOutlet weak var tableView: UITableView!
 
@@ -63,6 +65,7 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("tweetCell", forIndexPath: indexPath) as! TweetCell
         cell.tweet = tweets![indexPath.row]
+        cell.delegate = self
         
         return cell
     }
@@ -87,6 +90,25 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         navigationBar.items = [navigationItem]
         
         self.view.addSubview(navigationBar)
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "compositionSegue" {
+            let navigationController = segue.destinationViewController as! UINavigationController
+            
+            let compositionViewController = navigationController.topViewController as! CompositionViewController
+            compositionViewController.inReplyToStatusId = inReplyToStatusId
+            compositionViewController.inReplyToUsername = inReplyToUsername
+            
+            self.inReplyToStatusId = nil
+            self.inReplyToUsername = nil
+        }
+    }
+    
+    func tweetCell(tweetCell: TweetCell, id: Int, username: String) {
+        inReplyToStatusId = id
+        inReplyToUsername = username
+        self.performSegueWithIdentifier("compositionSegue", sender: self)
     }
     
     func onLogout() {

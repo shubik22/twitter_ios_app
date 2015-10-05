@@ -8,13 +8,20 @@
 
 import UIKit
 
+@objc protocol TweetCellDelegate {
+    func tweetCell(tweetCell: TweetCell, id: Int, username: String)
+}
+
 class TweetCell: UITableViewCell {
 
+    @IBOutlet weak var replyButton: UIButton!
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var twitterHandleLabel: UILabel!
     @IBOutlet weak var timestampLabel: UILabel!
     @IBOutlet weak var tweetTextLabel: UILabel!
+    
+    var delegate: TweetCellDelegate!
 
     var tweet: Tweet! {
         didSet {
@@ -28,15 +35,18 @@ class TweetCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
     }
     
+    @IBAction func onReplyButton(sender: AnyObject) {
+        delegate.tweetCell(self, id: tweet.id!, username: tweet.user!.screenname!)
+    }
+
     override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
     }
-
+    
     func formatTimeElapsed(sinceDate: NSDate) -> String {
         let formatter = NSDateComponentsFormatter()
         formatter.unitsStyle = NSDateComponentsFormatterUnitsStyle.Abbreviated
