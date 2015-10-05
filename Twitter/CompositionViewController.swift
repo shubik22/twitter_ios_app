@@ -21,6 +21,7 @@ class CompositionViewController: UIViewController {
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var twitterHandleLabel: UILabel!
+    @IBOutlet weak var tweetTextView: UITextView!
     override func viewDidLoad() {
         super.viewDidLoad()
         user = User.currentUser
