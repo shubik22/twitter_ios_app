@@ -14,6 +14,8 @@ import UIKit
 
 class TweetCell: UITableViewCell {
 
+    @IBOutlet weak var retweetButton: UIButton!
+    @IBOutlet weak var favoriteButton: UIButton!
     @IBOutlet weak var replyButton: UIButton!
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var userNameLabel: UILabel!
@@ -30,6 +32,8 @@ class TweetCell: UITableViewCell {
             twitterHandleLabel.text = "@\(tweet.user!.screenname!)"
             tweetTextLabel.text = tweet.text
             timestampLabel.text = formatTimeElapsed(tweet.createdAt!)
+            favoriteButton.setImage(UIImage(named: tweet.favorited! ? "favorite_on" : "favorite"), forState: UIControlState.Normal)
+            retweetButton.setImage(UIImage(named: tweet.retweeted! ? "retweet_on" : "retweet"), forState: UIControlState.Normal)
         }
     }
 
@@ -39,6 +43,24 @@ class TweetCell: UITableViewCell {
     
     @IBAction func onReplyButton(sender: AnyObject) {
         delegate.tweetCell(self, id: tweet.id!, username: tweet.user!.screenname!)
+    }
+    
+    @IBAction func onRetweetButton(sender: AnyObject) {
+        TwitterClient.sharedInstance.retweetTweetWithCompletion(tweet.id!) { (error) -> () in
+            if error == nil {
+                self.retweetButton.setImage(UIImage(named: "retweet_on"), forState: UIControlState.Normal)
+
+            }
+        }
+    }
+    
+    @IBAction func onFavoriteButton(sender: AnyObject) {
+        let params = ["id": tweet.id!]
+        TwitterClient.sharedInstance.postFavoriteWithParams(params) { (error) -> () in
+            if error == nil {
+                self.favoriteButton.setImage(UIImage(named: "favorite_on"), forState: UIControlState.Normal)
+            }
+        }
     }
 
     override func setSelected(selected: Bool, animated: Bool) {
