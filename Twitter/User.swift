@@ -22,10 +22,10 @@ class User: NSObject {
     
     init(dict: NSDictionary) {
         self.dictionary = dict
-
         name = dict["name"] as? String
         screenname = dict["screen_name"] as? String
-        profileImageUrl = dict["profile_image_url"] as? String
+        let normalImageUrl = dict["profile_image_url_https"] as? String
+        profileImageUrl = normalImageUrl?.stringByReplacingOccurrencesOfString("normal", withString: "bigger")
         tagline = dict["description"] as? String
     }
     
