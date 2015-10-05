@@ -24,3 +24,5 @@ Time spent: ~12 hours
 ### Walkthrough
 
 ![Video Walkthrough](walkthrough.gif)
+
+(I hit rate limit a few minutes ago, so I'm having trouble making the walkthrough.  I'll add it in a few minutes once I can access my home timeline again.  Sorry!)
