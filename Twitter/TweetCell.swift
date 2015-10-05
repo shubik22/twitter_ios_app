@@ -46,18 +46,16 @@ class TweetCell: UITableViewCell {
     }
     
     @IBAction func onRetweetButton(sender: AnyObject) {
-        TwitterClient.sharedInstance.retweetTweetWithCompletion(tweet.id!) { (error) -> () in
-            if error == nil {
+        tweet.retweetWithCompletion { (success) -> () in
+            if success {
                 self.retweetButton.setImage(UIImage(named: "retweet_on"), forState: UIControlState.Normal)
-
             }
         }
     }
-    
+
     @IBAction func onFavoriteButton(sender: AnyObject) {
-        let params = ["id": tweet.id!]
-        TwitterClient.sharedInstance.postFavoriteWithParams(params) { (error) -> () in
-            if error == nil {
+        tweet.favoriteWithCompletion { (success) -> () in
+            if success {
                 self.favoriteButton.setImage(UIImage(named: "favorite_on"), forState: UIControlState.Normal)
             }
         }

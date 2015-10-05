@@ -14,17 +14,18 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
     var refreshControl: UIRefreshControl!
     var inReplyToStatusId: Int?
     var inReplyToUsername: String?
+    var selectedTweet: Tweet?
 
     @IBOutlet weak var tableView: UITableView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.navigationBar.barTintColor = UIColor(red: 0.333, green: 0.675, blue: 0.933, alpha: 1.0)
-        
+
         if self.navigationController == nil {
             addNavBar()
         }
-        
+
         refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: "onRefresh", forControlEvents: UIControlEvents.ValueChanged)
         tableView.insertSubview(refreshControl, atIndex: 0)
@@ -69,6 +70,11 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         
         return cell
     }
+
+    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+        selectedTweet = tweets![indexPath.row]
+        self.performSegueWithIdentifier("detailsSegue", sender: self)
+    }
     
     func addNavBar() {
         let navigationBar = UINavigationBar(frame: CGRectMake(0, 0, self.view.frame.size.width, 64))
@@ -95,13 +101,17 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "compositionSegue" {
             let navigationController = segue.destinationViewController as! UINavigationController
-            
             let compositionViewController = navigationController.topViewController as! CompositionViewController
             compositionViewController.inReplyToStatusId = inReplyToStatusId
             compositionViewController.inReplyToUsername = inReplyToUsername
             
             self.inReplyToStatusId = nil
             self.inReplyToUsername = nil
+        } else if segue.identifier == "detailsSegue" {
+            print("detail segue")
+            let detailsViewController = segue.destinationViewController as! TweetDetailsViewController
+            detailsViewController.tweet = self.selectedTweet!
+            self.selectedTweet = nil
         }
     }
     

@@ -16,6 +16,8 @@ class Tweet: NSObject {
     var id: Int?
     var favorited: Bool?
     var retweeted: Bool?
+    var numFavorites: Int?
+    var numRetweets: Int?
     
     init(dictionary: NSDictionary) {
         user = User(dict: dictionary["user"] as! NSDictionary)
@@ -24,6 +26,8 @@ class Tweet: NSObject {
         id = dictionary["id"] as? Int
         favorited = dictionary["favorited"] as? Bool
         retweeted = dictionary["retweeted"] as? Bool
+        numFavorites = dictionary["favorites"] as? Int
+        numRetweets = dictionary["retweets"] as? Int
 
         var formatter = NSDateFormatter()
         formatter.dateFormat = "EEE MMM d HH:mm:ss Z y"
@@ -38,5 +42,18 @@ class Tweet: NSObject {
         }
         
         return tweets
+    }
+    
+    func favoriteWithCompletion(completion: (success: Bool) -> ()) {
+        let params = ["id": id!]
+        TwitterClient.sharedInstance.postFavoriteWithParams(params) { (error) -> () in
+            completion(success: error == nil)
+        }
+    }
+    
+    func retweetWithCompletion(completion: (success: Bool) -> ()) {
+        TwitterClient.sharedInstance.retweetTweetWithCompletion(id!) { (error) -> () in
+            completion(success: error == nil)
+        }
     }
 }
