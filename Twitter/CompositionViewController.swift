@@ -39,15 +39,20 @@ class CompositionViewController: UIViewController {
     }
     
     @IBAction func onTweet(sender: AnyObject) {
-        print("tweeted")
+        let params = ["status": tweetTextView.text]
+        TwitterClient.sharedInstance.postTweetWithParams(params) { (error) -> () in
+            if error != nil {
+                print("error posting tweet: \(self.tweetTextView.text)")
+                print(error)
+            } else {
+                self.performSegueWithIdentifier("homeSegue", sender: self)
+            }
+            
+        }
     }
 
     @IBAction func onCancel(sender: AnyObject) {
         self.performSegueWithIdentifier("homeSegue", sender: self)
     }
-
-//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-//        self.sendingVC = segue.sourceViewController
-//    }
 
 }
