@@ -99,8 +99,9 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        let navigationController = segue.destinationViewController as! UINavigationController
+
         if segue.identifier == "compositionSegue" {
-            let navigationController = segue.destinationViewController as! UINavigationController
             let compositionViewController = navigationController.topViewController as! CompositionViewController
             compositionViewController.inReplyToStatusId = inReplyToStatusId
             compositionViewController.inReplyToUsername = inReplyToUsername
@@ -108,8 +109,7 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
             self.inReplyToStatusId = nil
             self.inReplyToUsername = nil
         } else if segue.identifier == "detailsSegue" {
-            print("detail segue")
-            let detailsViewController = segue.destinationViewController as! TweetDetailsViewController
+            let detailsViewController = navigationController.topViewController as! TweetDetailsViewController
             detailsViewController.tweet = self.selectedTweet!
             self.selectedTweet = nil
         }

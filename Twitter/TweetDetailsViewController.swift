@@ -17,29 +17,23 @@ class TweetDetailsViewController: UIViewController {
     @IBOutlet weak var createdAtLabel: UILabel!
     @IBOutlet weak var numRetweetsLabel: UILabel!
     @IBOutlet weak var numFavoritesLabel: UILabel!
-    
     @IBOutlet weak var retweetButton: UIButton!
     @IBOutlet weak var favoriteButton: UIButton!
     
-    var tweet: Tweet! {
-        didSet {
-            print(tweet)
-            profileImageView.setImageWithURL(NSURL(string: tweet.user!.profileImageUrl!))
-            nameLabel.text = tweet.user!.name
-            screenNameLabel.text = "@\(tweet.user!.screenname!)"
-            tweetTextLabel.text = tweet.text
-            createdAtLabel.text = tweet.createdAtString
-            numRetweetsLabel.text = "\(tweet.numRetweets!)"
-            numFavoritesLabel.text = "\(tweet.numFavorites!)"
-            favoriteButton.setImage(UIImage(named: tweet.favorited! ? "favorite_on" : "favorite"), forState: UIControlState.Normal)
-            retweetButton.setImage(UIImage(named: tweet.retweeted! ? "retweet_on" : "retweet"), forState: UIControlState.Normal)
-        }
-    }
+    var tweet: Tweet!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        profileImageView.setImageWithURL(NSURL(string: tweet.user!.profileImageUrl!))
+        nameLabel.text = tweet.user!.name
+        screenNameLabel.text = "@\(tweet.user!.screenname!)"
+        tweetTextLabel.text = tweet.text!
+        createdAtLabel.text = tweet.createdAtString!
+        numRetweetsLabel.text = "\(tweet.numRetweets!)"
+        numFavoritesLabel.text = "\(tweet.numFavorites!)"
+        favoriteButton.setImage(UIImage(named: tweet.favorited! ? "favorite_on" : "favorite"), forState: UIControlState.Normal)
+        retweetButton.setImage(UIImage(named: tweet.retweeted! ? "retweet_on" : "retweet"), forState: UIControlState.Normal)
     }
 
     override func didReceiveMemoryWarning() {
