@@ -11,6 +11,8 @@ import UIKit
 class TweetsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UINavigationBarDelegate {
 
     var tweets: [Tweet]?
+    var refreshControl: UIRefreshControl!
+
     @IBOutlet weak var tableView: UITableView!
 
     override func viewDidLoad() {
@@ -21,17 +23,30 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
             addNavBar()
         }
         
+        refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: "onRefresh", forControlEvents: UIControlEvents.ValueChanged)
+        tableView.insertSubview(refreshControl, atIndex: 0)
+        
         tableView.dataSource = self
         tableView.delegate = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 120
         
+        loadTimeline()
+    }
+    
+    func onRefresh() {
+        loadTimeline()
+        refreshControl.endRefreshing()
+    }
+
+    func loadTimeline() {
         TwitterClient.sharedInstance.homeTimelineWithParams(nil) { (tweets, error) -> () in
             self.tweets = tweets
             self.tableView.reloadData()
         }
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -64,7 +79,11 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         let leftButton =  UIBarButtonItem(title: "Sign Out", style: UIBarButtonItemStyle.Plain, target: self, action: "onLogout")
         leftButton.tintColor = UIColor.whiteColor()
         
+        let rightButton =  UIBarButtonItem(title: "New", style: UIBarButtonItemStyle.Plain, target: self, action: "onNewTweet")
+        rightButton.tintColor = UIColor.whiteColor()
+        
         navigationItem.leftBarButtonItem = leftButton
+        navigationItem.rightBarButtonItem = rightButton
         navigationBar.items = [navigationItem]
         
         self.view.addSubview(navigationBar)
@@ -74,12 +93,8 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         User.currentUser?.logout()
     }
     
-
-//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-//        let vc = segue.destinationViewController as! TweetsViewController
-//        if vc.navigationController == nil {
-//            vc.addNavBar()
-//        }
-//    }
+    func onNewTweet() {
+        self.performSegueWithIdentifier("compositionSegue", sender: self)
+    }
 
 }
